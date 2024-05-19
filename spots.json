@@ -5,10 +5,11 @@
       "type": "Feature",
       "properties": {
         "country": "New Zealand",
-        "title": "Swimming with Humpback Whales in Niue",
+        "category": "Unique Wildlife",
         "species": "Manatee",
+        "title": "Swimming with Humpback Whales in Niue",
         "skill": 0,
-        "locationType": 3,
+        "location-type": 3,
         "season": "000000122100",
         "links": [
           [
@@ -33,10 +34,11 @@
       "type": "Feature",
       "properties": {
         "country": "Dominica",
-        "title": "Freediving with the Sperm Whales of Dominica",
+        "category": "Whales",
         "species": "Spermwhale",
+        "title": "Freediving with the Sperm Whales of Dominica",
         "skill": 0,
-        "locationType": 3,
+        "location-type": 3,
         "season": "222111111122",
         "links": []
       },
@@ -52,10 +54,11 @@
       "type": "Feature",
       "properties": {
         "country": "Portugal",
-        "title": "Swim with Blue Sharks in Faial",
+        "category": "Sharks",
         "species": "Blue Shark",
+        "title": "Swim with Blue Sharks in Faial",
         "skill": 1,
-        "locationType": 3,
+        "location-type": 3,
         "season": "011111221210",
         "links": []
       },
@@ -71,10 +74,11 @@
       "type": "Feature",
       "properties": {
         "country": "Portugal",
-        "title": "See the legendary Mobula Rays of Princess Alice Banks",
+        "category": "Rays",
         "species": "Mobula Ray",
+        "title": "See the legendary Mobula Rays of Princess Alice Banks",
         "skill": 1,
-        "locationType": 7,
+        "location-type": 7,
         "season": "000000222100",
         "links": []
       },
@@ -90,10 +94,11 @@
       "type": "Feature",
       "properties": {
         "country": "Portugal",
-        "title": "Jump in the Water with Diverse Species of Dolphins",
+        "category": "Dolphins",
         "species": "Dolphins",
+        "title": "Jump in the Water with Diverse Species of Dolphins",
         "skill": 0,
-        "locationType": 3,
+        "location-type": 3,
         "season": "222222222222",
         "links": []
       },
@@ -109,10 +114,11 @@
       "type": "Feature",
       "properties": {
         "country": "Colombia",
-        "title": "Dive with Giant Whalesharks in Mapelo",
+        "category": "Sharks",
         "species": "Whaleshark",
+        "title": "Dive with Giant Whalesharks in Mapelo",
         "skill": 1,
-        "locationType": 4,
+        "location-type": 4,
         "season": "000000222000",
         "links": []
       },
@@ -128,10 +134,11 @@
       "type": "Feature",
       "properties": {
         "country": "Colombia",
-        "title": "Dive with Schooling Hammerhead Sharks in Mapelo",
+        "category": "Sharks",
         "species": "Hammerhead Shark",
+        "title": "Dive with Schooling Hammerhead Sharks in Mapelo",
         "skill": 1,
-        "locationType": 5,
+        "location-type": 5,
         "season": "222221111111",
         "links": []
       },
@@ -147,10 +154,11 @@
       "type": "Feature",
       "properties": {
         "country": "Norway",
-        "title": "Orcas and Humpbacks of Norway",
+        "category": "Whales",
         "species": "Orca",
+        "title": "Orcas and Humpbacks of Norway",
         "skill": 1,
-        "locationType": 3,
+        "location-type": 3,
         "season": "200000000221",
         "links": []
       },
@@ -166,10 +174,11 @@
       "type": "Feature",
       "properties": {
         "country": "Norway",
-        "title": "Orcas and Humpbacks of Norway",
+        "category": "Whales",
         "species": "Humpback Whale",
+        "title": "Orcas and Humpbacks of Norway",
         "skill": 1,
-        "locationType": 3,
+        "location-type": 3,
         "season": "200000000221",
         "links": []
       },
@@ -185,10 +194,11 @@
       "type": "Feature",
       "properties": {
         "country": "Mexico",
-        "title": "Dive with Giant Oceanic Manta Rays in Socorro",
+        "category": "Rays",
         "species": "Manta Ray",
+        "title": "Dive with Giant Oceanic Manta Rays in Socorro",
         "skill": 1,
-        "locationType": 4,
+        "location-type": 4,
         "season": "222222000022",
         "links": []
       },
@@ -204,10 +214,11 @@
       "type": "Feature",
       "properties": {
         "country": "Mexico",
-        "title": "Dive with Schooling Hammerhead Sharks in Socorro",
+        "category": "Sharks",
         "species": "Hammerhead Shark",
+        "title": "Dive with Schooling Hammerhead Sharks in Socorro",
         "skill": 1,
-        "locationType": 4,
+        "location-type": 4,
         "season": "000222000000",
         "links": []
       },
@@ -223,10 +234,11 @@
       "type": "Feature",
       "properties": {
         "country": "Mexico",
-        "title": "Witness Humpback Whiles while Scuba Diving in Socorro",
+        "category": "Whales",
         "species": "Humpback Whale",
+        "title": "Witness Humpback Whiles while Scuba Diving in Socorro",
         "skill": 1,
-        "locationType": 4,
+        "location-type": 4,
         "season": "022200000000",
         "links": []
       },
@@ -242,10 +254,11 @@
       "type": "Feature",
       "properties": {
         "country": "Mexico",
-        "title": "Dive with Whale Sharks in Socorro",
+        "category": "Sharks",
         "species": "Whaleshark",
+        "title": "Dive with Whale Sharks in Socorro",
         "skill": 1,
-        "locationType": 4,
+        "location-type": 4,
         "season": "000002000020",
         "links": []
       },
@@ -261,10 +274,11 @@
       "type": "Feature",
       "properties": {
         "country": "Ecuador",
-        "title": "Dive with Schooling Hammerheads in the Galapagos Islands",
+        "category": "Sharks",
         "species": "Hammerhead Shark",
+        "title": "Dive with Schooling Hammerheads in the Galapagos Islands",
         "skill": 1,
-        "locationType": 4,
+        "location-type": 4,
         "season": "000000000000",
         "links": []
       },
@@ -280,10 +294,11 @@
       "type": "Feature",
       "properties": {
         "country": "Ecuador",
-        "title": "Dive with Giant Whalesharks in the Galapagos Islands",
+        "category": "Sharks",
         "species": "Whaleshark",
+        "title": "Dive with Giant Whalesharks in the Galapagos Islands",
         "skill": 1,
-        "locationType": 4,
+        "location-type": 4,
         "season": "111112222211",
         "links": []
       },
@@ -299,10 +314,11 @@
       "type": "Feature",
       "properties": {
         "country": "Ecuador",
-        "title": "See the Sunfish Mola Mola in the Galapagos Islands ",
+        "category": "Unique Wildlife",
         "species": "Mola Mola",
+        "title": "See the Sunfish Mola Mola in the Galapagos Islands ",
         "skill": 1,
-        "locationType": 4,
+        "location-type": 4,
         "season": "111112222211",
         "links": []
       },
@@ -318,10 +334,11 @@
       "type": "Feature",
       "properties": {
         "country": "Ecuador",
-        "title": "Experience the Only Place in the World to Dive with Marine Iguanas",
+        "category": "Unique Wildlife",
         "species": "Marine Iguana",
+        "title": "Experience the Only Place in the World to Dive with Marine Iguanas",
         "skill": 1,
-        "locationType": 4,
+        "location-type": 4,
         "season": "111112222211",
         "links": []
       },
@@ -337,10 +354,11 @@
       "type": "Feature",
       "properties": {
         "country": "Bahamas",
-        "title": "Watch Tiger Sharks Feeding at Tiger Beach",
+        "category": "Sharks",
         "species": "Tiger Shark",
+        "title": "Watch Tiger Sharks Feeding at Tiger Beach",
         "skill": 1,
-        "locationType": 6,
+        "location-type": 6,
         "season": "211111111222",
         "links": []
       },
@@ -356,10 +374,11 @@
       "type": "Feature",
       "properties": {
         "country": "Bahamas",
-        "title": "Dive with Great Hammerhead Sharks in The Bahamas",
+        "category": "Sharks",
         "species": "Hammerhead Shark",
+        "title": "Dive with Great Hammerhead Sharks in The Bahamas",
         "skill": 0,
-        "locationType": 6,
+        "location-type": 6,
         "season": "221100000001",
         "links": []
       },
@@ -375,10 +394,11 @@
       "type": "Feature",
       "properties": {
         "country": "Argentina",
-        "title": "Swim with Southern Right Whales in Argentina",
+        "category": "Whales",
         "species": "Southern Right Whale",
+        "title": "Swim with Southern Right Whales in Argentina",
         "skill": 1,
-        "locationType": 3,
+        "location-type": 3,
         "season": "000002222000",
         "links": []
       },
@@ -387,240 +407,6 @@
         "coordinates": [
           -63.7195260401504,
           -42.9757908549028
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "country": "Costa Rica",
-        "title": "",
-        "species": "",
-        "locationType": 0,
-        "season": "000000000000",
-        "links": []
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          "",
-          ""
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "country": "",
-        "title": "",
-        "species": "",
-        "locationType": 0,
-        "season": "000000000000",
-        "links": []
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          "",
-          ""
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "country": "",
-        "title": "",
-        "species": "",
-        "locationType": 0,
-        "season": "000000000000",
-        "links": []
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          "",
-          ""
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "country": "",
-        "title": "",
-        "species": "",
-        "locationType": 0,
-        "season": "000000000000",
-        "links": []
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          "",
-          ""
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "country": "",
-        "title": "",
-        "species": "",
-        "locationType": 0,
-        "season": "000000000000",
-        "links": []
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          "",
-          ""
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "country": "",
-        "title": "",
-        "species": "",
-        "locationType": 0,
-        "season": "000000000000",
-        "links": []
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          "",
-          ""
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "country": "",
-        "title": "",
-        "species": "",
-        "locationType": 0,
-        "season": "000000000000",
-        "links": []
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          "",
-          ""
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "country": "",
-        "title": "",
-        "species": "",
-        "locationType": 0,
-        "season": "000000000000",
-        "links": []
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          "",
-          ""
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "country": "",
-        "title": "",
-        "species": "",
-        "locationType": 0,
-        "season": "000000000000",
-        "links": []
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          "",
-          ""
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "country": "",
-        "title": "",
-        "species": "",
-        "locationType": 0,
-        "season": "000000000000",
-        "links": []
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          "",
-          ""
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "country": "",
-        "title": "",
-        "species": "",
-        "locationType": 0,
-        "season": "000000000000",
-        "links": []
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          "",
-          ""
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "country": "",
-        "title": "",
-        "species": "",
-        "locationType": 0,
-        "season": "000000000000",
-        "links": []
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          "",
-          ""
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "country": "",
-        "title": "",
-        "species": "",
-        "locationType": 0,
-        "season": "000000000000",
-        "links": []
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          "",
-          ""
         ]
       }
     }
