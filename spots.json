@@ -10,7 +10,7 @@
         "title": "Swimming with Humpback Whales in Niue",
         "skill": 0,
         "location-type": 3,
-        "season": "000000122100",
+        "season": 512000,
         "links": [
           [
             "Test",
@@ -39,7 +39,7 @@
         "title": "Freediving with the Sperm Whales of Dominica",
         "skill": 0,
         "location-type": 3,
-        "season": "222111111122",
+        "season": 66409852,
         "links": []
       },
       "geometry": {
@@ -59,7 +59,7 @@
         "title": "Swim with Blue Sharks in Faial",
         "skill": 1,
         "location-type": 3,
-        "season": "011111221210",
+        "season": 1963348,
         "links": []
       },
       "geometry": {
@@ -79,7 +79,7 @@
         "title": "See the legendary Mobula Rays of Princess Alice Banks",
         "skill": 1,
         "location-type": 7,
-        "season": "000000222100",
+        "season": 520192,
         "links": []
       },
       "geometry": {
@@ -99,7 +99,7 @@
         "title": "Jump in the Water with Diverse Species of Dolphins",
         "skill": 0,
         "location-type": 3,
-        "season": "222222222222",
+        "season": 67108860,
         "links": []
       },
       "geometry": {
@@ -119,7 +119,7 @@
         "title": "Dive with Giant Whalesharks in Mapelo",
         "skill": 1,
         "location-type": 4,
-        "season": "000000222000",
+        "season": 258048,
         "links": []
       },
       "geometry": {
@@ -139,7 +139,7 @@
         "title": "Dive with Schooling Hammerhead Sharks in Mapelo",
         "skill": 1,
         "location-type": 5,
-        "season": "222221111111",
+        "season": 55924732,
         "links": []
       },
       "geometry": {
@@ -159,7 +159,7 @@
         "title": "Orcas and Humpbacks of Norway",
         "skill": 1,
         "location-type": 3,
-        "season": "200000000221",
+        "season": 58458112,
         "links": []
       },
       "geometry": {
@@ -179,7 +179,7 @@
         "title": "Orcas and Humpbacks of Norway",
         "skill": 1,
         "location-type": 3,
-        "season": "200000000221",
+        "season": 58458112,
         "links": []
       },
       "geometry": {
@@ -199,7 +199,7 @@
         "title": "Dive with Giant Oceanic Manta Rays in Socorro",
         "skill": 1,
         "location-type": 4,
-        "season": "222222000022",
+        "season": 66064380,
         "links": []
       },
       "geometry": {
@@ -219,7 +219,7 @@
         "title": "Dive with Schooling Hammerhead Sharks in Socorro",
         "skill": 1,
         "location-type": 4,
-        "season": "000222000000",
+        "season": 4032,
         "links": []
       },
       "geometry": {
@@ -239,7 +239,7 @@
         "title": "Witness Humpback Whiles while Scuba Diving in Socorro",
         "skill": 1,
         "location-type": 4,
-        "season": "022200000000",
+        "season": 252,
         "links": []
       },
       "geometry": {
@@ -259,7 +259,7 @@
         "title": "Dive with Whale Sharks in Socorro",
         "skill": 1,
         "location-type": 4,
-        "season": "000002000020",
+        "season": 3148800,
         "links": []
       },
       "geometry": {
@@ -279,7 +279,7 @@
         "title": "Dive with Schooling Hammerheads in the Galapagos Islands",
         "skill": 1,
         "location-type": 4,
-        "season": "000000000000",
+        "season": 0,
         "links": []
       },
       "geometry": {
@@ -299,7 +299,7 @@
         "title": "Dive with Giant Whalesharks in the Galapagos Islands",
         "skill": 1,
         "location-type": 4,
-        "season": "111112222211",
+        "season": 23067988,
         "links": []
       },
       "geometry": {
@@ -319,7 +319,7 @@
         "title": "See the Sunfish Mola Mola in the Galapagos Islands ",
         "skill": 1,
         "location-type": 4,
-        "season": "111112222211",
+        "season": 23067988,
         "links": []
       },
       "geometry": {
@@ -339,7 +339,7 @@
         "title": "Experience the Only Place in the World to Dive with Marine Iguanas",
         "skill": 1,
         "location-type": 4,
-        "season": "111112222211",
+        "season": 23067988,
         "links": []
       },
       "geometry": {
@@ -359,7 +359,7 @@
         "title": "Watch Tiger Sharks Feeding at Tiger Beach",
         "skill": 1,
         "location-type": 6,
-        "season": "211111111222",
+        "season": 66934100,
         "links": []
       },
       "geometry": {
@@ -379,7 +379,7 @@
         "title": "Dive with Great Hammerhead Sharks in The Bahamas",
         "skill": 0,
         "location-type": 6,
-        "season": "221100000001",
+        "season": 54526044,
         "links": []
       },
       "geometry": {
@@ -399,7 +399,7 @@
         "title": "Swim with Southern Right Whales in Argentina",
         "skill": 1,
         "location-type": 3,
-        "season": "000002222000",
+        "season": 261120,
         "links": []
       },
       "geometry": {
