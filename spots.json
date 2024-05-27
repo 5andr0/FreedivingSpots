@@ -411,5 +411,50 @@
       }
     }
   ],
-  "bbox": {}
+  "bbox": {
+    "species": {
+      "Whales": [
+        "Blue Whale",
+        "Humpback Whale",
+        "Southern Right Whale",
+        "Minke Whale",
+        "Grey Whale",
+        "Spermwhale",
+        "Orca",
+        "Pilotwhale"
+      ],
+      "Dolphins": [
+        "Dolphins"
+      ],
+      "Sharks": [
+        "Whaleshark",
+        "Tiger Shark",
+        "Bull Shark",
+        "Hammerhead Shark",
+        "Great White Shark",
+        "Blue Shark",
+        "Nurse Shark",
+        "Reef Shark",
+        "Basking Shark",
+        "Salmon Shark"
+      ],
+      "Rays": [
+        "Manta Ray",
+        "Mobula Ray",
+        "Sting Ray"
+      ],
+      "Unique Wildlife": [
+        "Dugong",
+        "Manatee",
+        "Sealion",
+        "Mola Mola",
+        "Marlin",
+        "Marine Iguana",
+        "Crocodile",
+        "Pigs",
+        "Jellyfish",
+        "Leopard Seal"
+      ]
+    }
+  }
 }
