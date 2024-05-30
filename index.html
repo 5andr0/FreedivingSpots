@@ -1,222 +1,777 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="utf-8">
-<title>Filter symbols by toggling checkboxes</title>
-<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
-<link href="https://api.mapbox.com/mapbox-gl-js/v3.2.0/mapbox-gl.css" rel="stylesheet">
-<script src="https://api.mapbox.com/mapbox-gl-js/v3.2.0/mapbox-gl.js"></script>
-<style>
-body { margin: 0; padding: 0; }
-#map { position: absolute; top: 0; bottom: 0; width: 100%; }
-</style>
+  <meta charset="utf-8">
+  <title>Wild Ocean Spots</title>
+  <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+  <!-- Styles -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mapbox-gl/3.3.0/mapbox-gl.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.7.1/nouislider.css">
+  <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.7.1/nouislider.min.css"> -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/css/select2.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2-bootstrap-5-theme/1.3.0/select2-bootstrap-5-theme.min.css" />
+  <!-- <link rel="stylesheet" href="./select2-bootstrap-5-theme.css" /> -->
+  <!-- Scripts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mapbox-gl/3.3.0/mapbox-gl.js"></script>
+  <!-- cloudflare minified mapbox version turns the mapboxgl variable into o-->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+  <!-- we need the bootstrap bundle to include popper for dropdowns -->
+  <!--script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/js/select2.min.js"></script-->
+  <!--script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/js/select2.js"></script-->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/js/select2.full.js"></script>
+
+  <script src="select2.optgroup.js"></script>
+  <!-- <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.7.1/nouislider.min.js"></script> -->
+  <script src="nouislider.js"></script>
+  <script>
+    function throttle(f, delay) {
+      let lastCall = -Infinity;
+      let wait;
+      let handle;
+      return (...args) => {
+        wait = lastCall + delay - Date.now();
+        clearTimeout(handle);
+        handle = setTimeout(() => {
+          f(...args);
+          lastCall = Date.now();
+        }, wait);
+      };
+    }
+    function escapeHTML(unsafe) {
+        return unsafe.replace(
+            /[\u0000-\u002F\u003A-\u0040\u005B-\u0060\u007B-\u00FF]/g,
+            c => '&#' + ('000' + c.charCodeAt(0)).slice(-4) + ';'
+        )
+    }
+    const escapeId = (id) => id.replace(/\s/g,'_');
+  </script>
+
+  <style>
+    body { margin: 0; padding: 0; }
+    #map { position: absolute; top: 0; bottom: 0; width: 100%; }
+
+    .select2-container--bootstrap-5.select2-container--focus .select2-selection {
+      border-color: #86b7fe;
+    }
+   
+   .select2-container--bootstrap-5.select2-container--open .select2-selection {
+      border-color: #86b7fe;
+      /* clip the bottom of the border and box-shadow of the select container when dropdown is shown */
+      -webkit-clip-path: inset(-5px -5px 0px -5px);
+      clip-path: inset(-5px -5px 0px -5px);
+    }
+
+    .select2-container.select2-container--bootstrap-5:not(.select2) > * {
+      /* give the dropdown the same box-shadow like the select container */
+      box-shadow: 0 0 0 .25rem rgba(13, 110, 253, .25);
+      border: 1px solid #86b7fe;
+      border-top: 0;
+    }
+
+    .select2-container.select2-container--bootstrap-5:not(.select2) > *:last-child {
+        /* clip the top box shadow */
+      -webkit-clip-path: inset(0px -5px -5px -5px);
+      clip-path: inset(0px -5px -5px -5px);
+      border: 1px solid #86b7fe;
+      /* round bottom edges for the last dropdown element */
+      border-radius: 0 0 0.25rem 0.25rem;
+    }
+
+    .select2-container.select2-container--bootstrap-5:not(.select2) > *:not(:last-child) {
+      /* clip top and bottom box shadow of all dropdown elements except the last one */
+      -webkit-clip-path: inset(0 -5px 0 -5px);
+      clip-path: inset(0 -5px 0 -5px);
+      border-bottom: 0;
+    }
+
+    .select2-container--bootstrap-5 .select2-dropdown {
+      border: none;
+    }
+
+    .select2-results__group {
+      font-weight: bold !important;
+    }
+
+    .select2-selection--multiple .select2-selection__rendered .select2-selection__choice {
+      /* remove the padding so that the whole row can get highlighted */
+      padding: 0em 0em !important;
+      margin-right: 0.375rem !important;
+      margin-bottom: 0rem !important;
+    }
+
+    /* overwriting the select2 bootstrap 5 theme */
+    .select2-container--bootstrap-5 .select2-selection--multiple .select2-selection__rendered .select2-selection__choice .select2-selection__choice__remove:hover {
+      background: initial;
+    }
+
+    .select2-container--bootstrap-5 .select2-selection--multiple .select2-selection__rendered .select2-selection__choice .select2-selection__choice__remove { 
+      all: initial;
+      margin-inline: 0.25em;
+      cursor: pointer;
+    }
+
+    .select2-selection__choice__display img {
+      /* stretching the icons to set height with the original img ratio */
+      object-fit: contain;
+      height: 1.5rem;
+      /* max-width: 1.5rem; */
+    }
+
+    .select2-selection__choice__text {
+      margin-right: 0.25em;
+      /* keep space separated options in one row */
+      white-space: nowrap;
+    }
+
+    .select2-results__image {
+      height: 1.5rem;
+    }
+
+    .select2-results__option {
+      padding-top: 0;
+      padding-bottom: 0;
+    }
+
+    .dropdown-menu {
+      max-width: 30rem; /* to be changed */
+    }
+
+    .dropdown-item:active {
+      /* removing the blue highlight background when dragging slider */
+      background-color: initial;
+    }
+  </style>
 </head>
 <body>
-<style>
-    .filter-group {
-        font:
-            12px/20px 'Helvetica Neue',
-            Arial,
-            Helvetica,
-            sans-serif;
-        font-weight: 600;
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        z-index: 1;
-        border-radius: 3px;
-        width: 120px;
-        color: #fff;
+  <div id="map"></div>
+  <div class="container-fluid">
+    <nav class="navbar navbar-expand navbar-light flex-nowrap">
+      <ul class="navbar-nav align-top">
+        <li class="nav-item dropdown"></li>
+          <select multiple='multiple' id='species-filter' class="form-control"></select>
+        </li>
+      </ul>
+      <!-- ms-auto aligns it to the right, ps-3 gives padding bewteen the left nav -->
+      <ul class="navbar-nav ps-3 align-items-start ms-auto">
+        <li class="nav-item dropdown full-width position-static">
+          <button class="btn btn-secondary dropdown-toggle" type="button" id="navbar-season" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-haspopup="true" aria-expanded="false">
+              Jan - Dec
+          </button>
+          <div class="dropdown-menu w-100 ms-auto position-absolute end-0" aria-labelledby="navbar-season">
+            <div class="dropdown-item"><div id="season-slider" class="mx-3"></div></div>
+          </div>
+        </li>
+      </ul>
+    </nav>
+  </div>
+  <script>(async() => {
+    const options = {
+      // Map
+      map: {
+        zoom: 8, // -2 - 24 // earth: 0 | Large islands: 4 | Large roads: 10
+        center: [-111.4101663297230, 18.7782202669213],
+        projection: 'mercator', // 'globe'
+        style: "mapbox://styles/mapbox/outdoors-v12",
+        clusterRadius: 25,
+      },
+      // Controls
+      controls: {
+        monthFormat: 'short', // 'long'
+        speciesSelectPlaceholder: 'Filter Animals',
+        speciesSelectDisplayLabels: false,
+      },
+      // Symbols
+      icons: {
+        size: 50,
+        padding: 5,
+        extension: "png",
+        seasonalIcons: true, // when true show icon-2 icon-1 icon based on season match
+        opacityInterpolateFunction: // https://easings.net/
+          // function steps(x) {
+          //   switch(true) {
+          //     case (x < 0.1): return 0.3;
+          //     case (x <= 0.5): return 0.8;
+          //   }
+          //   return 1;
+          // }
+          function easeOutCubic(x) {
+            return Math.max(1 - Math.pow(1 - x, 3), 0.3); // leave a minimum opacity of 0.3
+          }
+          // function easeOutExpo(x) {
+          //   // keep high opacity longer than cubic
+          //   return Math.max(x === 1 ? 1 : 1 - Math.pow(2, -10 * x), 0.3); // leave a minimum opacity of 0.3
+          // }
+      },
+      // Scaling
+      scaling: {
+        shrinkFactor: 0.5, // 0-1   higher value => smaller clusters
+        interpolateFunction: // https://easings.net/
+          function easeInOutSine(x) {
+            return -(Math.cos(Math.PI * x) - 1) / 2;
+          }
+          // function easeInOutQuad(x) {
+          //   return x < 0.5 ? 2 * x * x : 1 - Math.pow(-2 * x + 2, 2) / 2;
+          // },
+          ,
+        zoomFactor: 0.3, // 0-1 minimum scale at max zoom - smaller value => smaller symbols when zooming out
+      },
     }
-
-    .filter-group input[type='checkbox']:first-child + label {
-        border-radius: 3px 3px 0 0;
-    }
-
-    .filter-group label:last-child {
-        border-radius: 0 0 3px 3px;
-        border: none;
-    }
-
-    .filter-group input[type='checkbox'] {
-        display: none;
-    }
-
-    .filter-group input[type='checkbox'] + label {
-        background-color: #3386c0;
-        display: block;
-        cursor: pointer;
-        padding: 10px;
-        border-bottom: 1px solid rgba(0, 0, 0, 0.25);
-    }
-
-    .filter-group input[type='checkbox'] + label {
-        background-color: #3386c0;
-        text-transform: capitalize;
-    }
-
-    .filter-group input[type='checkbox'] + label:hover,
-    .filter-group input[type='checkbox']:checked + label {
-        background-color: #4ea0da;
-    }
-
-    .filter-group input[type='checkbox']:checked + label:before {
-        content: '✔';
-        margin-right: 5px;
-    }
-</style>
-<div id="map"></div>
-<nav id="filter-group" class="filter-group"></nav>
-
-<script>
-	mapboxgl.accessToken = 'pk.eyJ1IjoiZnJlZWRpdmluZ3Nwb3QiLCJhIjoiY2xlczZiYTZrMTQyODQzdGtwdzVmbmw4byJ9.L0sofXNziO4YiaNS7go0Fw';
-    // This GeoJSON contains features that include an "icon"
-    // property. The value of the "icon" property corresponds
-    // to an image in the Mapbox Light style's sprite. (Note:
-    // the name of images is the value of the "icon" property
-    // + "-15".)
-    const places = {
-        'type': 'FeatureCollection',
-        'features': [
-            {
-                'type': 'Feature',
-                'properties': {
-                    'icon': 'theatre'
-                },
-                'geometry': {
-                    'type': 'Point',
-                    'coordinates': [-77.038659, 38.931567]
-                }
-            },
-            {
-                'type': 'Feature',
-                'properties': {
-                    'icon': 'theatre'
-                },
-                'geometry': {
-                    'type': 'Point',
-                    'coordinates': [-77.003168, 38.894651]
-                }
-            },
-            {
-                'type': 'Feature',
-                'properties': {
-                    'icon': 'bar'
-                },
-                'geometry': {
-                    'type': 'Point',
-                    'coordinates': [-77.090372, 38.881189]
-                }
-            },
-            {
-                'type': 'Feature',
-                'properties': {
-                    'icon': 'bicycle'
-                },
-                'geometry': {
-                    'type': 'Point',
-                    'coordinates': [-77.052477, 38.943951]
-                }
-            },
-            {
-                'type': 'Feature',
-                'properties': {
-                    'icon': 'music'
-                },
-                'geometry': {
-                    'type': 'Point',
-                    'coordinates': [-77.031706, 38.914581]
-                }
-            },
-            {
-                'type': 'Feature',
-                'properties': {
-                    'icon': 'music'
-                },
-                'geometry': {
-                    'type': 'Point',
-                    'coordinates': [-77.020945, 38.878241]
-                }
-            },
-            {
-                'type': 'Feature',
-                'properties': {
-                    'icon': 'music'
-                },
-                'geometry': {
-                    'type': 'Point',
-                    'coordinates': [-77.007481, 38.876516]
-                }
-            }
-        ]
-    };
 
     const filterGroup = document.getElementById('filter-group');
-    const map = new mapboxgl.Map({
-        container: 'map',
-        // Choose from Mapbox's core styles, or make your own style with Mapbox Studio
-        // projection: 'globe',
-        projection: 'mercator',
-        style: 'mapbox://styles/freedivingspot/clesf6mkj001h01lg7inugsrv',
-        center: [-77.04, 38.907],
-        zoom: 11.15
-    });
+  
+    const locationTypes = {
+      swim:     1<<0, //0b001,
+      freedive: 1<<1, //0b010,
+      scuba:    1<<2, //0b100
+    };
 
-    map.on('load', () => {
-        // Add a GeoJSON source containing place coordinates and information.
-        map.addSource('places', {
-            'type': 'geojson',
-            'data': places            
-            // Use a URL for the value for the `data` property.
-            //data: 'https://docs.mapbox.com/mapbox-gl-js/assets/earthquakes.geojson'
-        });
+    mapboxgl.accessToken = 'pk.eyJ1IjoiZnJlZWRpdmluZ3Nwb3QiLCJhIjoiY2xlczZiYTZrMTQyODQzdGtwdzVmbmw4byJ9.L0sofXNziO4YiaNS7go0Fw';
+    const map = new mapboxgl.Map({...{container: 'map'}, ...options.map});
 
-        for (const feature of places.features) {
-            const symbol = feature.properties.icon;
-            const layerID = `poi-${symbol}`;
+    // prefetch the geojson while map is loading
+    responsePromise = fetch('spots.json')// fetch('./spots.json')
+      .then((response)=>response.json())
+      .then((responseJson)=>{return responseJson})
+      .catch((error) => console.error(error));
 
-            // Add a layer for this symbol type if it hasn't been added already.
-            if (!map.getLayer(layerID)) {
-                map.addLayer({
-                    'id': layerID,
-                    'type': 'symbol',
-                    'source': 'places',
-                    'layout': {
-                        // These icons are a part of the Mapbox Light style.
-                        // To view all images available in a Mapbox style, open
-                        // the style in Mapbox Studio and click the "Images" tab.
-                        // To add a new image to the style at runtime see
-                        // https://docs.mapbox.com/mapbox-gl-js/example/add-image/
-                        'icon-image': `${symbol}`,
-                        'icon-allow-overlap': true
-                    },
-                    'filter': ['==', 'icon', symbol]
-                });
+    await map.once('load');
+    places = await responsePromise;
 
-                // Add checkbox and label elements for the layer.
-                const input = document.createElement('input');
-                input.type = 'checkbox';
-                input.id = layerID;
-                input.checked = true;
-                filterGroup.appendChild(input);
+    let seasonMask = 0xFFFFFF;
+    function applySeasonStyle(el, id, season) {
+      function _bitCount (n) {
+        n = n - ((n >> 1) & 0x55555555)
+        n = (n & 0x33333333) + ((n >> 2) & 0x33333333)
+        return ((n + (n >> 4) & 0xF0F0F0F) * 0x1010101) >> 24
+      }
+      // bit arithmetic is beautiful and fast
+      // 2 bits: high season, 1: low season, 0: off season
+      const quotient = _bitCount(season & seasonMask) / // only sum bits of selected range
+        (_bitCount(seasonMask)>>1); // divide by sum of mask bits divided by 2 (bits per month)
+      const i = Math.ceil(quotient); 
+      el.src = `./assets/${id}${(i==2||!options.icons.seasonalIcons)?'':'-'+i}.${options.icons.extension}`;
+      el.style.opacity = options.icons.opacityInterpolateFunction(quotient/2);
+      return el;
+    }
 
-                const label = document.createElement('label');
-                label.setAttribute('for', layerID);
-                label.textContent = symbol;
-                filterGroup.appendChild(label);
+    ( function installSlider(map) {
+      const slider = document.getElementById('season-slider');
+      noUiSlider.create(slider, {
+        start: [0, 11],
+        connect: true,
+        range: {
+            'min': 0,
+            'max': 11
+        },
+        behaviour: "unconstrained-invert-connects-drag",
+        step: 1,
+      });
 
-                // When the checkbox changes, update the visibility of the layer.
-                input.addEventListener('change', (e) => {
-                    map.setLayoutProperty(
-                        layerID,
-                        'visibility',
-                        e.target.checked ? 'visible' : 'none'
-                    );
-                });
-            }
+      // 'set' only fires after drag release
+      slider.noUiSlider.on('update', function (values) {
+        const month = (monthIndex, format = options.controls.monthFormat) => Intl.DateTimeFormat('en', { month: format }).format(new Date(0, (Math.trunc(monthIndex))));
+        let mask = 0;
+        let i = parseInt(values[0]);
+        const end = parseInt(values[1]);
+        while (true) {
+          mask |= 3<<(i<<1);
+          if (i == end) {
+            break;
+          }
+          i = ++i % 12;
         }
-    });
-</script>
+        seasonMask = mask;
+        map.triggerRepaint();
+        //map.setConfigProperty('basemap', 'season', monthRange.join(""));
+        if(values[0] == values[1]) {
+          // display the full month name if it's only one
+          $('#navbar-season').text(month(values[0], 'long'));
+        } else {
+          $('#navbar-season').text(month(values[0]) + ' - ' + month(values[1]));
+        }
+      });
+    } )(map); // installSlider(map)
 
+    const speciesData = [];
+    const sourceId = 'spots';
+    // TODO: create a country filter
+    //const countries = new Set(places.features.map((feature) => feature.properties.country))
+    for (const [i, {properties}] of places.features.entries()) {
+      properties.speciesId = escapeId(properties.species);
+      properties.id = i;
+      for(const [type, flag] of Object.entries(locationTypes)) {
+        if(properties['location-type'] & flag) {
+          properties[type] = true;
+        }
+      }
+    }
+    
+    map.addSource(sourceId, {
+      'type': 'geojson',
+      'data': places,
+      'cluster': true,
+      'clusterRadius': options.map.clusterRadius,
+      'filter': ['all', true, true]
+    });
+    const source = map.getSource(sourceId);
+
+    Array.prototype.remove = function(condition) {
+      var indexElement = this.findIndex(condition);
+      if (indexElement != -1)
+        this.splice(indexElement, 1);
+      return this;
+    };
+
+    const Filter = new class {
+      constructor() {
+        this.speciesFilter = ["any"]
+        this.locationTypeFilter =  ["any"]
+      }
+      _update() {
+        source.workerOptions.filter = ['all',
+          (this.speciesFilter.length > 1) ? this.speciesFilter : true,
+          (this.locationTypeFilter.length > 1) ? this.locationTypeFilter : true,
+
+        ];
+        // waiting for source.setFilter to get merged: https://github.com/mapbox/mapbox-gl-js/issues/10722
+        source._updateWorkerData();
+      }
+
+      species(species, set) {
+        this.speciesFilter.remove(f => Array.isArray(f) ? f[2] == species : false);
+        if (set) {
+          this.speciesFilter.push(['==', ['get', 'speciesId'], species]);
+        }
+        this._update();
+      }
+
+      locationType(type, set) {
+        this.locationTypeFilter.remove(f => Array.isArray(f) ? f[1] == type : false);
+        if (set) {
+          this.locationTypeFilter.push(['has', type]);
+        }
+        this._update();
+      }
+    }();
+
+    // for (const {properties: {category, species}} of places.features.filter((feature, i, arr) => arr.findIndex((s) => feature.properties.species === s.properties.species) === i)) {
+
+    //   const id = escapeId(species);
+    //   const categoryId = escapeId(category);
+
+    //   let group = speciesData.find((g) => g.id == categoryId);
+    //   if (group === void 0) {
+    //     group = { id: categoryId, text: category, children: [] };
+    //     speciesData.push(group);
+    //   }
+    //   group.children.push({
+    //     id: id,
+    //     text: species
+    //   });
+    // }
+    for (const [category, species] of Object.entries(places.bbox.species)) {
+      speciesData.push({ 
+        id: escapeId(category), 
+        text: category, 
+        children: species.map(s => ({
+          id: escapeId(s), 
+          text: s
+        }))
+      });
+    }
+
+    ( function addSpeciesFilter(data) {
+      $.fn.select2.defaults.set( "theme", "bootstrap-5" );
+      $('#species-filter').select2({
+        data: speciesData,
+        tags: false,
+        templateSelection: function (data, $selection) {
+          // this gets appended to the select2-selection__choice__display container
+          // appending the text to another span so that only the img is clickable
+          if(options.controls.speciesSelectDisplayLabels) {
+            $selection.append(`<span class="select2-selection__choice__text">${escapeHTML(data.text)}</span>`);
+          }
+          return `<img src="assets/${escapeHTML(data.id)}.png" alt="${escapeHTML(data.text)}">`;
+        },
+        escapeMarkup: $,//(m)=>m, // String, // disable html escaping for templates
+        selectionAdapterDecorators: [class {
+          selectionContainer() {
+            //choice__remove has to be a direct child of selection__choice to bind the right data on click
+            var $container = $(
+              '<li class="select2-selection__choice">' +
+                '<span class="select2-selection__choice__remove select2-selection__choice__display"></span>' +
+              '</li>'
+            );
+
+            return $container;
+          };
+          _resizeSelection() {
+            var $rendered = this.$selection.find('.select2-selection__rendered');
+            var oldWidth = $rendered.outerWidth(false);
+            $rendered.children().remove('.select2-selection__more');
+            var $children = $rendered.children();
+            if($children.length) {
+              $children.show(); // reset for window size changes
+              var $first = $children.eq(0);
+              var firstTop = $first.offset().top;
+              var $wrappedChildren = $children.filter(function() {
+                var location = $(this).offset();
+                return (location.top != firstTop)
+              });
+              if($wrappedChildren.length) {
+                $wrappedChildren.hide();
+                var $more = $(
+                  '<li class="select2-selection__more">' +
+                    '<span>...</span>' +
+                  '</li>'
+                );
+                $more.css('padding-top', $first.css("padding-top"))
+                    .css('padding-top', '+=1'); // adding 1px from the missing border
+
+                $rendered.append($more);
+                while ($more.offset().top != firstTop) {
+                  // $more didn't fit in the first row, so we have to hide the last element
+                  $children.filter(':visible:last').hide();
+                }
+              }
+              if(oldWidth != $rendered.outerWidth(false)) {
+                $(window).trigger(this.resizeEvent); // trigger resize dropdown
+              }
+            }
+          }
+          resizeSearch(decorated) {
+            // always show it with full length in second row
+            var width = '100%';
+            this.$search.css('width', width);
+          };
+          bind(decorated, container, $container) {
+
+            const $searchContainer = this.$searchContainer;
+            const $search = this.$search;
+            let self = this;
+            // this.$selection.off('click');
+            this.$selection.on('click', function (evt) {
+
+              if(
+                // don't toggle dropdown when removing options
+                $(evt.target).parent().hasClass('select2-selection__choice__remove') ||
+                //return; // don't close when clicking into the search field
+                  (evt.target == $search[0] && container.isOpen())
+                ) {
+                evt.stopImmediatePropagation();
+              }
+            });
+            decorated.call(this, container, $container);
+
+            this.resizeEvent = 'resize.select2.' + container.id;
+
+            container.on('open', function () {
+              self.$search.css('max-width', ''); // we want 100% width for search
+              $searchContainer.show();
+              $search.trigger('focus');
+            });
+
+            container.on('close', function () {
+              const $rendered = $searchContainer.prev();
+              if($rendered[0].hasChildNodes()) {
+                // only show for placeholder
+                $searchContainer.hide();
+              } else {
+                self._shrinkToPlaceholder();
+              }
+            });
+          }
+          update(decorated, data) {
+            decorated.call(this, data);
+
+            if(data.length) {
+              //this.$searchContainer.hide();
+              this._resizeSelection();
+              this.$selection.find('.select2-selection__choice__remove').each(function(_,e,$e=$(e)) {
+                const title = 'Remove '+$e.parent().attr('title');
+                $e.attr('title', title).attr('aria-label', title);
+              });
+            } else  {
+              this.$searchContainer.show();
+            }
+          }
+          _shrinkToPlaceholder() {
+            // this is a hacky way to calculate the min textarea size based on placeholder
+            // in the future this can be done by field-sizing: content;
+            this.$placeholder.show();
+            this.$search.css('max-width', this.$placeholder.outerWidth(false) + 'px');
+            this.$placeholder.hide();
+          }
+          position(decorated, $selection, $container) {
+            decorated.call(this, $selection, $container);
+            this._shrinkToPlaceholder();
+          };
+          render(decorated) {
+            console.log('render called');
+            var $rendered = decorated.call(this);
+            //this.$searchContainer.hide();
+            const placeholder = this.options.get('placeholder');
+            if(placeholder) {
+              this.$placeholder = $(`<div aria-hidden="true" style="height: 0;visibility: hidden;display: inline-block;">${placeholder}</div>`);
+              this.$placeholder.hide();
+              this.$searchContainer.append(this.$placeholder);
+            }
+
+            if (window.ResizeObserver) {
+              let oldBodyWidth = $(document.body).width();
+              const resizeSelection = this._resizeSelection.bind(this);
+              const throttledResizeSelection = throttle(resizeSelection, 100);
+              new ResizeObserver((entries) => {
+                const cBS = entries[0].contentBoxSize;
+                if (cBS) {
+                  const width = cBS[0].inlineSize;
+                  if(oldBodyWidth < width) {
+                    throttledResizeSelection();
+                  }
+                  oldBodyWidth = width;
+                }
+              })
+              .observe(document.body);
+
+              let oldRenderedWidth = 0;
+              new ResizeObserver((entries) => {
+                const cBS = entries[0].contentBoxSize;
+                if (cBS) {
+                  const width = cBS[0].inlineSize;
+                  console.log('new dropdown size: %d', width);
+                  if(oldRenderedWidth > width) {
+                    resizeSelection();
+                  }
+                  oldRenderedWidth = width;
+                }
+              })
+              .observe($rendered[0]);
+            }
+            return $rendered;
+          }}],
+        // we are using the select field search, not the dropdown search
+        dropdownAdapterDecorators: [/*$.fn.select2.amd.require('select2/dropdown/search'), */class {
+          bind(decorated, container, $container) {
+            var self = this;
+
+            decorated.call(this, container, $container);
+          }
+        }],
+        templateResult: function (result, $container) {
+          return $(`<div><img src="assets/${escapeHTML(result.id)}.png" class="select2-results__image"> ${escapeHTML(result.text)}</div>`);
+        },
+        resultsAdapterDecorators: [class {
+          showLoading() {}
+          bind(decorated, container, $container) {
+            decorated.call(this, container, $container);
+
+            if (window.ResizeObserver) {
+              new ResizeObserver((entries) => {
+                const cBS = entries[0].contentBoxSize;
+                if (cBS) {
+                  const width = cBS[0].inlineSize;
+                  if (width) {
+                    $container.css({
+                      minWidth: (width) ? container.$dropdown.outerWidth(false) + 'px' : ''
+                    });
+                  }
+                }
+              })
+              .observe(this.$results[0]);
+            }
+          }
+        }],
+        selectableOptgroup: true,
+        dropdownAutoWidth: true,
+        groupResults: true,
+        closeOnSelect: false,
+        width: null,
+        containerCssClass: ':all:',
+        placeholder: options.controls.speciesSelectPlaceholder,
+        minimumResultsForSearch: 0,
+        multiple: true,
+        theme: 'bootstrap-5'
+      })
+      .on('select2:select select2:unselect', function (e) {
+        var data = e.params.data;
+        Filter.species(data.id, data.selected);
+      });
+    })(speciesData);
+
+    class clusterOffsets {
+      static staticConstructor = (function() {
+        clusterOffsets.scales = [];
+        clusterOffsets.offsets = [];
+        clusterOffsets.centers = [];
+
+        for(let i = 0; i < 7; i++) {
+          // Math.PI / 3 means 3 circles per semicircle
+          // so we can display a total of 6 markers in a full circle + 1 in the center
+          clusterOffsets.offsets[i] = {
+            x: (i) ? Math.cos(i * Math.PI / 3) : 0,
+            y: (i) ? Math.sin(i * Math.PI / 3) : 0
+          };
+          const x = clusterOffsets.offsets.map(pt => pt.x);
+          const y = clusterOffsets.offsets.map(pt => pt.y);
+          const max = {x: Math.max(...x), y: Math.max(...y)};
+          const min = {x: Math.min(...x), y: Math.min(...y)};
+          // scale = 1 / (max distance + size of 1 icon)
+          clusterOffsets.scales[i] = 1 / (1 + Math.max(
+            max.x - min.x,
+            max.y - min.y,
+          ));
+          clusterOffsets.centers[i] = {
+            x: (min.x + max.x) / 2,
+            y: (min.y + max.y) / 2
+          };
+        }
+      })()
+
+      constructor(radius, count, scale = 1, shrinkFactor = 0) {
+        this.radius = radius;
+        this.count = count-1; // between 1 and 7
+        this.scaleFactor = scale * (1 - (1 - clusterOffsets.scales[this.count]) * shrinkFactor);
+      }
+
+      get(index) {
+        return [
+          this.scaleFactor * this.radius * (clusterOffsets.offsets[index].x - clusterOffsets.centers[this.count].x),
+          this.scaleFactor * this.radius * (clusterOffsets.offsets[index].y - clusterOffsets.centers[this.count].y)
+        ];
+      }
+
+      scale = () => this.scaleFactor;
+    }
+
+    const markers = {};
+    let markersOnScreen = {};
+
+    async function updateMarkers() {
+      const newMarkers = {};
+      const features = map.querySourceFeatures(sourceId);
+
+      function createPopup(props) {
+        // mapbox only stringifies properties arrays when they are populated
+        const links = (typeof props.links === 'string') ? JSON.parse(props.links) : [];
+        return `
+          <div>
+          <strong>${escapeHTML(props.title)}</strong>
+          <p>${escapeHTML(props.description??'')}</p>
+          ${links.map(url => `
+            <a href="${escapeHTML(url[1])}">
+              <em>${escapeHTML(url[0])}</em>
+            </a>`).join(', ')}
+          </div>
+          `;
+      }
+
+      function getClusterLeaves(cluster_id, limit, offset) {
+        return new Promise((resolve, reject) => {
+          source.getClusterLeaves(cluster_id, limit, offset, (err, features) => {
+            // when source filter is updated, old clusters remain for 1 render cycle and throw errors that we have to ignore
+            if (err) resolve([]);
+            else resolve(features);
+          });
+        });
+      };
+
+      function addMarker(props, coords, scale = 1, offset = [0, 0]) {
+        const id = props.id;
+        let marker = markers[id];
+        if (!marker) {
+          const el = new Image();
+          el.dataset.season = props.season; // you can use custom data if you have assigned it in the GeoJSON data
+          el.dataset.species = id;
+          applySeasonStyle(el, props.speciesId, props.season);
+          // mapbox keeps overriding opacity, so we have to put the img in a div to modify opacity
+          const div = document.createElement('div');
+          div.appendChild(el);
+
+          marker = markers[id] = new mapboxgl.Marker({
+            element: div
+          })
+          .setPopup(new mapboxgl.Popup().setHTML(createPopup(props))) // add popup
+        }
+
+        const el = marker
+          .setLngLat(coords)
+          .setOffset(offset)
+          .getElement().firstChild;
+        el.style.width = el.style.height = `${scale * options.icons.size}px`;
+        applySeasonStyle(el, props.speciesId, props.season);
+
+        if (!markersOnScreen[props.id]) {
+          marker.addTo(map);
+        }
+
+        return (newMarkers[id] = marker);
+      }
+
+      // min zoom can be negative
+      const zoomFactor = (map.getZoom() - map.getMinZoom()) / (map.getMaxZoom() - map.getMinZoom());
+      const zoomScale = options.scaling.interpolateFunction(zoomFactor);
+      const mapScale = options.scaling.zoomFactor + (1-options.scaling.zoomFactor)*zoomScale;
+      // clusterOffsets scales all cluster symbols to fit inside 
+      // we want to negate this effect when zoomed in
+      const shrinkFactor = options.scaling.shrinkFactor * (1 - mapScale);
+      
+      // for every cluster on the screen, create an HTML marker for it (if we didn't yet),
+      // and add it to the map if it's not there already
+      for (const feature of features) {
+        const coords = feature.geometry.coordinates;
+        const props = feature.properties;
+        if (!props.cluster) {
+          // reset marker offset and scale if it was in a cluster before
+          addMarker(props, coords);
+          continue;
+        }
+        // only query max 7 features
+        const clusterFeatures = await getClusterLeaves(props.cluster_id, 7, 0);
+        if(!clusterFeatures) continue;
+        const offsets = new clusterOffsets(options.icons.size + options.icons.padding, clusterFeatures.length, mapScale, shrinkFactor);
+        for(const [i, {properties}] of clusterFeatures.entries()) {
+          const off = offsets.get(i);
+          addMarker(properties, coords, offsets.scale(), offsets.get(i));
+        }
+      }
+      // for every marker we've added previously, remove those that are no longer visible
+      for (const id in markersOnScreen) {
+        if (!newMarkers[id]) {
+          markersOnScreen[id].remove();
+        }
+      }
+      markersOnScreen = newMarkers;
+    }
+
+    // after the GeoJSON data is loaded, update markers on the screen on every frame
+    map.on('render', () => {
+        //if (!map.isSourceLoaded(sourceId)) return;
+        updateMarkers();
+    });
+
+    const layerId = 'symbols';
+    map.addLayer({
+        'id': layerId,
+        'type': 'symbol',
+        'source': sourceId,
+        'layout': {
+          'icon-allow-overlap': true,
+          // icon-size affects offset scaling aswell
+        },
+      });
+
+    // Change the cursor to a pointer when the mouse is over the places layer.
+    map.on('mouseenter', layerId, () => {
+      map.getCanvas().style.cursor = 'pointer';
+    });
+
+    // Change it back to a pointer when it leaves.
+    map.on('mouseleave', layerId, () => {
+      map.getCanvas().style.cursor = '';
+    });
+  })();
+  </script>
 </body>
 </html>
