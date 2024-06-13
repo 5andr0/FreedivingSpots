@@ -2,29 +2,27 @@
 <html>
 <head>
   <meta charset="utf-8">
+  <meta name="robots" content="noindex, nofollow" />
   <title>Wild Ocean Spots</title>
   <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
   <!-- Styles -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mapbox-gl/3.3.0/mapbox-gl.min.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.7.1/nouislider.css">
-  <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.7.1/nouislider.min.css"> -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.8.0/nouislider.min.css"> 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/css/select2.min.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2-bootstrap-5-theme/1.3.0/select2-bootstrap-5-theme.min.css" />
-  <!-- <link rel="stylesheet" href="./select2-bootstrap-5-theme.css" /> -->
   <!-- Scripts -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/mapbox-gl/3.3.0/mapbox-gl.js"></script>
-  <!-- cloudflare minified mapbox version turns the mapboxgl variable into o-->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
   <!-- we need the bootstrap bundle to include popper for dropdowns -->
-  <!--script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/js/select2.min.js"></script-->
-  <!--script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/js/select2.js"></script-->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/js/select2.full.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/js/select2.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 
+  <!-- big shout out to leon gersen for merging my pull request to support inverted connects -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.8.0/nouislider.min.js"></script>
+  <!-- I wish select2 would implement my patches aswell, but the project is dead -->
   <script src="select2.optgroup.js"></script>
-  <!-- <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.7.1/nouislider.min.js"></script> -->
-  <script src="nouislider.js"></script>
   <script>
     function throttle(f, delay) {
       let lastCall = -Infinity;
@@ -39,18 +37,42 @@
         }, wait);
       };
     }
-    function escapeHTML(unsafe) {
-        return unsafe.replace(
-            /[\u0000-\u002F\u003A-\u0040\u005B-\u0060\u007B-\u00FF]/g,
-            c => '&#' + ('000' + c.charCodeAt(0)).slice(-4) + ';'
-        )
+
+    const escapeId = id => id.replace(/\s/g,'_');
+
+    $.fn.join = function(separator) {
+      return $('<div>').append(this.toArray().flatMap((e, i) => [separator.clone(), e]).slice(1));
+    };
+
+    Array.prototype.remove = function(condition) {
+      const indexElement = this.findIndex(condition);
+      if (indexElement != -1)
+        this.splice(indexElement, 1);
+      return this;
+    };
+
+    function observeWidth(element, callback) {
+      let oldWidth = $(element).width();
+      if (window.ResizeObserver) {
+        new ResizeObserver(entries => {
+          const cBS = entries[0].contentBoxSize;
+          if (cBS) {
+            const width = cBS[0].inlineSize;
+            callback(width, oldWidth);
+            oldWidth = width;
+          }
+        })
+        .observe(element);
+      }
     }
-    const escapeId = (id) => id.replace(/\s/g,'_');
   </script>
 
   <style>
     body { margin: 0; padding: 0; }
     #map { position: absolute; top: 0; bottom: 0; width: 100%; }
+
+    /* ignore dark mode for the species icons */
+    img { color-scheme: only light !important; }
 
     .select2-container--bootstrap-5.select2-container--focus .select2-selection {
       border-color: #86b7fe;
@@ -120,7 +142,7 @@
     }
 
     .select2-selection__choice__text {
-      margin-right: 0.25em;
+      /* margin-right: 0.25em; we use the icon margin for padding*/
       /* keep space separated options in one row */
       white-space: nowrap;
     }
@@ -170,24 +192,35 @@
     const options = {
       // Map
       map: {
-        zoom: 8, // -2 - 24 // earth: 0 | Large islands: 4 | Large roads: 10
-        center: [-111.4101663297230, 18.7782202669213],
+        zoom: 3, // -2 - 24 // earth: 0 | Large islands: 4 | Large roads: 10
+        center: [-87.46, 16.76],
         projection: 'mercator', // 'globe'
         style: "mapbox://styles/mapbox/outdoors-v12",
-        clusterRadius: 25,
+        clusterRadius: 40,
       },
       // Controls
       controls: {
         monthFormat: 'short', // 'long'
         speciesSelectPlaceholder: 'Filter Animals',
-        speciesSelectDisplayLabels: false,
+        speciesSelectDisplayLabels: true,
       },
       // Symbols
       icons: {
-        size: 50,
-        padding: 5,
-        extension: "png",
-        seasonalIcons: true, // when true show icon-2 icon-1 icon based on season match
+        map: { // number in px
+          size: 50,
+          padding: 5,
+        },
+        selection: { // css values in px, em, ...
+          height: '1.5rem',
+          width: '3rem', // variable max-width
+          padding: '0.5rem',
+        },
+        result: { // Icons in dropdown menu
+          height: '1.5rem',
+          width: '3rem', // fixed width to keep results indentation
+          padding: '0.5rem',
+        },
+        extension: "svg",
         opacityInterpolateFunction: // https://easings.net/
           // function steps(x) {
           //   switch(true) {
@@ -206,7 +239,7 @@
       },
       // Scaling
       scaling: {
-        shrinkFactor: 0.5, // 0-1   higher value => smaller clusters
+        shrinkFactor: 0.2, // 0-1   higher value => smaller clusters
         interpolateFunction: // https://easings.net/
           function easeInOutSine(x) {
             return -(Math.cos(Math.PI * x) - 1) / 2;
@@ -215,12 +248,117 @@
           //   return x < 0.5 ? 2 * x * x : 1 - Math.pow(-2 * x + 2, 2) / 2;
           // },
           ,
-        zoomFactor: 0.3, // 0-1 minimum scale at max zoom - smaller value => smaller symbols when zooming out
+        zoomFactor: 0.7, // 0-1 minimum scale at max zoom - smaller value => smaller symbols when zooming out
+      },
+      // Popup & temp chart
+      popup: {
+        template: (links, props) => [
+          $('<strong>').text(props.title),
+          $('<p>').text(props.description),
+          $('<canvas>'), // canvas for chart
+          $(links.map(link => $('<a>', {href: link[1]}).text(link[0])))
+            .join($('<span>').text(', ')),
+            // .join($('<br>')), // line break instead of comma
+        ],
+        chart: {
+          data: {
+            labels: [...Array(12)].map((_,i) => i+1), // 1-12
+            // labels: [...Array(12)].map((_,i) => Intl.DateTimeFormat('en', { month: 'short' }).format(new Date(0, i))), // Short month names
+            // use {month: 'narrow'} for capital first letter E.g. J F M A..
+            datasets: [
+              {
+                type: 'line',
+                label: 'Water Temp',
+                // fill: true,
+                borderColor: 'rgb(75, 192, 192)',
+                // backgroundColor is needed to fill the legend box/circle
+                backgroundColor: 'rgb(75, 192, 192)',
+                tension: 0.2
+              },
+              {
+                type: 'line',
+                label: 'Ambient Temp',
+                // fill: true,
+                borderColor: 'rgb(255, 19, 19)',
+                backgroundColor: '#FF1313',
+                tension: 0.2
+              },
+            ]
+          },
+          options: {
+            width: 280,
+            aspectRatio: 1, // 1.6,
+            // maintainAspectRatio: true,
+            plugins: {
+              drawSeasonalSpecies: {
+                dividerLine: {
+                  color: 'rgba(75, 192, 192, 0.7)',
+                  width: 0.5
+                },
+              },
+              legend: {
+                // https://www.chartjs.org/docs/latest/configuration/legend.html#legend-label-configuration
+                labels: {
+                  usePointStyle: true,
+                  boxHeight: 5,
+                  boxWidth: 5,
+                }
+              },
+              title: {
+                // https://www.chartjs.org/docs/latest/configuration/title.html
+                // lower the aspectRatio if you display a title
+                display: true,
+                text: 'Seasonality',
+                padding: {
+                  top: 5,
+                  bottom: 5
+                }
+              },
+              tooltip: {
+                callbacks: {
+                  title: context => context[0].dataset.label + " in " + Intl.DateTimeFormat('en', { month: 'long' }).format(new Date(0, context[0].parsed.x)),
+                  label: context => {
+                    const formattedLabel = yAxis => context.chart.scales[yAxis].options.ticks.callback(context.parsed.y);
+                    return /*context.dataset.label + ': ' + */formattedLabel('celsius') + " / " + formattedLabel('fahrenheit');
+                  }
+                }
+              },
+            },
+            scales: {
+              // https://www.chartjs.org/docs/latest/axes/#common-options-to-all-axes
+              x: {
+                ticks: {
+                  // https://www.chartjs.org/docs/latest/axes/cartesian/_common_ticks.html
+                  autoSkip: false, // always show all months
+                  maxRotation: 0, // disable label rotation
+                  minRotation: 0
+                }
+              },
+              celsius: {
+                min: -20,
+                suggestedMax: 40,
+                ticks: {
+                  stepSize: 10,
+                  callback: label =>
+                    (label < 0) ? '' : `${label}°C`,
+                },
+              },
+              fahrenheit: {
+                display: true,
+                position: 'right',
+                ticks: {
+                  callback: label =>
+                    (label < 0) ? '' : `${Math.round((label * (9 / 5)) + 32)}°F`,
+                },
+              }
+            }
+          }
+        },
       },
     }
 
     const filterGroup = document.getElementById('filter-group');
-  
+
     const locationTypes = {
       swim:     1<<0, //0b001,
       freedive: 1<<1, //0b010,
@@ -231,16 +369,16 @@
     const map = new mapboxgl.Map({...{container: 'map'}, ...options.map});
 
     // prefetch the geojson while map is loading
-    responsePromise = fetch('spots.json')// fetch('./spots.json')
-      .then((response)=>response.json())
-      .then((responseJson)=>{return responseJson})
-      .catch((error) => console.error(error));
+    responsePromise = fetch('spots.json')
+      .then(response => response.json())
+      .then(responseJson => responseJson)
+      .catch(error => console.error(error));
 
     await map.once('load');
     places = await responsePromise;
 
     let seasonMask = 0xFFFFFF;
-    function applySeasonStyle(el, id, season) {
+    function applySeasonStyle(el, season) {
       function _bitCount (n) {
         n = n - ((n >> 1) & 0x55555555)
         n = (n & 0x33333333) + ((n >> 2) & 0x33333333)
@@ -250,8 +388,6 @@
       // 2 bits: high season, 1: low season, 0: off season
       const quotient = _bitCount(season & seasonMask) / // only sum bits of selected range
         (_bitCount(seasonMask)>>1); // divide by sum of mask bits divided by 2 (bits per month)
-      const i = Math.ceil(quotient); 
-      el.src = `./assets/${id}${(i==2||!options.icons.seasonalIcons)?'':'-'+i}.${options.icons.extension}`;
       el.style.opacity = options.icons.opacityInterpolateFunction(quotient/2);
       return el;
     }
@@ -265,13 +401,13 @@
             'min': 0,
             'max': 11
         },
-        behaviour: "unconstrained-invert-connects-drag",
+        behaviour: "unconstrained-invert-connects",
         step: 1,
       });
 
-      // 'set' only fires after drag release
       slider.noUiSlider.on('update', function (values) {
-        const month = (monthIndex, format = options.controls.monthFormat) => Intl.DateTimeFormat('en', { month: format }).format(new Date(0, (Math.trunc(monthIndex))));
+        const month = (monthIndex, format = options.controls.monthFormat) => 
+          Intl.DateTimeFormat('en', { month: format }).format(new Date(0, monthIndex ^ 0));
         let mask = 0;
         let i = parseInt(values[0]);
         const end = parseInt(values[1]);
@@ -284,20 +420,19 @@
         }
         seasonMask = mask;
         map.triggerRepaint();
-        //map.setConfigProperty('basemap', 'season', monthRange.join(""));
         if(values[0] == values[1]) {
           // display the full month name if it's only one
           $('#navbar-season').text(month(values[0], 'long'));
         } else {
-          $('#navbar-season').text(month(values[0]) + ' - ' + month(values[1]));
+          //$('#navbar-season').text(month(values[0]) + ' - ' + month(values[1]));
+          $('#navbar-season').text(values.map(m => month(m)).join(' - '));
         }
       });
     } )(map); // installSlider(map)
 
     const speciesData = [];
     const sourceId = 'spots';
-    // TODO: create a country filter
-    //const countries = new Set(places.features.map((feature) => feature.properties.country))
+
     for (const [i, {properties}] of places.features.entries()) {
       properties.speciesId = escapeId(properties.species);
       properties.id = i;
@@ -313,28 +448,17 @@
       'data': places,
       'cluster': true,
       'clusterRadius': options.map.clusterRadius,
-      'filter': ['all', true, true]
     });
     const source = map.getSource(sourceId);
-
-    Array.prototype.remove = function(condition) {
-      var indexElement = this.findIndex(condition);
-      if (indexElement != -1)
-        this.splice(indexElement, 1);
-      return this;
-    };
 
     const Filter = new class {
       constructor() {
         this.speciesFilter = ["any"]
-        this.locationTypeFilter =  ["any"]
       }
-      _update() {
-        source.workerOptions.filter = ['all',
-          (this.speciesFilter.length > 1) ? this.speciesFilter : true,
-          (this.locationTypeFilter.length > 1) ? this.locationTypeFilter : true,
 
-        ];
+      _update() {
+        source.workerOptions.filter = 
+          (this.speciesFilter.length > 1) ? this.speciesFilter : ''
         // waiting for source.setFilter to get merged: https://github.com/mapbox/mapbox-gl-js/issues/10722
         source._updateWorkerData();
       }
@@ -346,31 +470,8 @@
         }
         this._update();
       }
-
-      locationType(type, set) {
-        this.locationTypeFilter.remove(f => Array.isArray(f) ? f[1] == type : false);
-        if (set) {
-          this.locationTypeFilter.push(['has', type]);
-        }
-        this._update();
-      }
     }();
 
-    // for (const {properties: {category, species}} of places.features.filter((feature, i, arr) => arr.findIndex((s) => feature.properties.species === s.properties.species) === i)) {
-
-    //   const id = escapeId(species);
-    //   const categoryId = escapeId(category);
-
-    //   let group = speciesData.find((g) => g.id == categoryId);
-    //   if (group === void 0) {
-    //     group = { id: categoryId, text: category, children: [] };
-    //     speciesData.push(group);
-    //   }
-    //   group.children.push({
-    //     id: id,
-    //     text: species
-    //   });
-    // }
     for (const [category, species] of Object.entries(places.bbox.species)) {
       speciesData.push({ 
         id: escapeId(category), 
@@ -387,48 +488,45 @@
       $('#species-filter').select2({
         data: speciesData,
         tags: false,
-        templateSelection: function (data, $selection) {
+        templateSelection: (data, $selection) => {
           // this gets appended to the select2-selection__choice__display container
           // appending the text to another span so that only the img is clickable
           if(options.controls.speciesSelectDisplayLabels) {
-            $selection.append(`<span class="select2-selection__choice__text">${escapeHTML(data.text)}</span>`);
+            $selection.append(
+              $('<span>').addClass('select2-selection__choice__text').text(data.text)
+            );
           }
-          return `<img src="assets/${escapeHTML(data.id)}.png" alt="${escapeHTML(data.text)}">`;
+          return $('<img>', {
+            src: `assets/${data.id}.${options.icons.extension}`, 
+            alt: data.text
+          }).css({
+            height: options.icons.selection.height,
+            maxWidth: options.icons.selection.width,
+            margin: `0 ${options.icons.selection.padding}`
+          });
         },
-        escapeMarkup: $,//(m)=>m, // String, // disable html escaping for templates
+        escapeMarkup: $, // disable html escaping for templates by just calling the jquery constructor
         selectionAdapterDecorators: [class {
           selectionContainer() {
-            //choice__remove has to be a direct child of selection__choice to bind the right data on click
-            var $container = $(
-              '<li class="select2-selection__choice">' +
-                '<span class="select2-selection__choice__remove select2-selection__choice__display"></span>' +
-              '</li>'
-            );
-
-            return $container;
+            // choice__remove has to be a direct child of selection__choice to bind the right data on click
+            return $('<li>').append($('<span>').addClass(["select2-selection__choice__remove", "select2-selection__choice__display"]));
           };
           _resizeSelection() {
-            var $rendered = this.$selection.find('.select2-selection__rendered');
-            var oldWidth = $rendered.outerWidth(false);
+            const $rendered = this.$selection.find('.select2-selection__rendered');
+            const oldWidth = $rendered.outerWidth(false);
             $rendered.children().remove('.select2-selection__more');
-            var $children = $rendered.children();
+            const $children = $rendered.children();
             if($children.length) {
               $children.show(); // reset for window size changes
-              var $first = $children.eq(0);
-              var firstTop = $first.offset().top;
-              var $wrappedChildren = $children.filter(function() {
-                var location = $(this).offset();
-                return (location.top != firstTop)
-              });
+              const $first = $children.eq(0);
+              const firstTop = $first.offset().top;
+              const $wrappedChildren = $children.filter((_, element) => $(element).offset().top != firstTop);
               if($wrappedChildren.length) {
                 $wrappedChildren.hide();
-                var $more = $(
-                  '<li class="select2-selection__more">' +
-                    '<span>...</span>' +
-                  '</li>'
-                );
-                $more.css('padding-top', $first.css("padding-top"))
-                    .css('padding-top', '+=1'); // adding 1px from the missing border
+                const $more = $('<li>').addClass('select2-selection__more')
+                  .append($('<span>').text('...'))
+                  .css('padding-top', $first.css("padding-top"))
+                  .css('padding-top', '+=1'); // adding 1px from the missing border
 
                 $rendered.append($more);
                 while ($more.offset().top != firstTop) {
@@ -443,22 +541,15 @@
           }
           resizeSearch(decorated) {
             // always show it with full length in second row
-            var width = '100%';
-            this.$search.css('width', width);
+            this.$search.css('width', '100%');
           };
           bind(decorated, container, $container) {
-
-            const $searchContainer = this.$searchContainer;
-            const $search = this.$search;
-            let self = this;
-            // this.$selection.off('click');
-            this.$selection.on('click', function (evt) {
-
+            this.$selection.on('click', evt => {
               if(
                 // don't toggle dropdown when removing options
                 $(evt.target).parent().hasClass('select2-selection__choice__remove') ||
-                //return; // don't close when clicking into the search field
-                  (evt.target == $search[0] && container.isOpen())
+                // don't close when clicking into search field
+                (evt.target == this.$search[0] && container.isOpen())
                 ) {
                 evt.stopImmediatePropagation();
               }
@@ -467,19 +558,19 @@
 
             this.resizeEvent = 'resize.select2.' + container.id;
 
-            container.on('open', function () {
-              self.$search.css('max-width', ''); // we want 100% width for search
-              $searchContainer.show();
-              $search.trigger('focus');
+            container.on('open', () => {
+              this.$search.css('max-width', ''); // we want 100% width for search
+              this.$searchContainer.show();
+              this.$search.trigger('focus');
             });
 
-            container.on('close', function () {
-              const $rendered = $searchContainer.prev();
+            container.on('close', () => {
+              const $rendered = this.$searchContainer.prev();
               if($rendered[0].hasChildNodes()) {
                 // only show for placeholder
-                $searchContainer.hide();
+                this.$searchContainer.hide();
               } else {
-                self._shrinkToPlaceholder();
+                this._shrinkToPlaceholder();
               }
             });
           }
@@ -487,9 +578,8 @@
             decorated.call(this, data);
 
             if(data.length) {
-              //this.$searchContainer.hide();
               this._resizeSelection();
-              this.$selection.find('.select2-selection__choice__remove').each(function(_,e,$e=$(e)) {
+              this.$selection.find('.select2-selection__choice__remove').each((_,e,$e=$(e)) => {
                 const title = 'Remove '+$e.parent().attr('title');
                 $e.attr('title', title).attr('aria-label', title);
               });
@@ -499,7 +589,7 @@
           }
           _shrinkToPlaceholder() {
             // this is a hacky way to calculate the min textarea size based on placeholder
-            // in the future this can be done by field-sizing: content;
+            // in the future with more browser support this can be done by field-sizing: content;
             this.$placeholder.show();
             this.$search.css('max-width', this.$placeholder.outerWidth(false) + 'px');
             this.$placeholder.hide();
@@ -509,78 +599,60 @@
             this._shrinkToPlaceholder();
           };
           render(decorated) {
-            console.log('render called');
-            var $rendered = decorated.call(this);
-            //this.$searchContainer.hide();
+            const $rendered = decorated.call(this);
             const placeholder = this.options.get('placeholder');
             if(placeholder) {
-              this.$placeholder = $(`<div aria-hidden="true" style="height: 0;visibility: hidden;display: inline-block;">${placeholder}</div>`);
-              this.$placeholder.hide();
+              this.$placeholder = $('<div>', {'aria-hidden': "true"})
+                .text(placeholder)
+                .css({
+                  height: 0,
+                  visibility: 'hidden',
+                  display: 'inline-block'
+                })
+                .hide();
               this.$searchContainer.append(this.$placeholder);
             }
 
-            if (window.ResizeObserver) {
-              let oldBodyWidth = $(document.body).width();
-              const resizeSelection = this._resizeSelection.bind(this);
-              const throttledResizeSelection = throttle(resizeSelection, 100);
-              new ResizeObserver((entries) => {
-                const cBS = entries[0].contentBoxSize;
-                if (cBS) {
-                  const width = cBS[0].inlineSize;
-                  if(oldBodyWidth < width) {
-                    throttledResizeSelection();
-                  }
-                  oldBodyWidth = width;
-                }
-              })
-              .observe(document.body);
+            const resizeSelection = this._resizeSelection.bind(this);
+            const throttledResizeSelection = throttle(resizeSelection, 100);
+            observeWidth(document.body, (width, oldWidth) => {
+              if(oldWidth < width) {
+                throttledResizeSelection();
+              }
+            });
 
-              let oldRenderedWidth = 0;
-              new ResizeObserver((entries) => {
-                const cBS = entries[0].contentBoxSize;
-                if (cBS) {
-                  const width = cBS[0].inlineSize;
-                  console.log('new dropdown size: %d', width);
-                  if(oldRenderedWidth > width) {
-                    resizeSelection();
-                  }
-                  oldRenderedWidth = width;
-                }
-              })
-              .observe($rendered[0]);
-            }
+            observeWidth($rendered[0], (width, oldWidth) => {
+              if(oldWidth > width) {
+                resizeSelection();
+              }
+            });
+
             return $rendered;
           }}],
-        // we are using the select field search, not the dropdown search
-        dropdownAdapterDecorators: [/*$.fn.select2.amd.require('select2/dropdown/search'), */class {
-          bind(decorated, container, $container) {
-            var self = this;
-
-            decorated.call(this, container, $container);
-          }
-        }],
-        templateResult: function (result, $container) {
-          return $(`<div><img src="assets/${escapeHTML(result.id)}.png" class="select2-results__image"> ${escapeHTML(result.text)}</div>`);
-        },
+        templateResult: (result, $container) => $('<div>')
+          .append(
+            $('<img>', {
+              src: `assets/${result.id}.${options.icons.extension}`
+            })
+            .css({
+              height: options.icons.result.height,
+              width: options.icons.result.width,
+              marginRight: options.icons.result.padding
+            })
+            .addClass('select2-results__image')
+          )
+          .append($('<span>').text(result.text))
+        ,
         resultsAdapterDecorators: [class {
           showLoading() {}
           bind(decorated, container, $container) {
             decorated.call(this, container, $container);
 
-            if (window.ResizeObserver) {
-              new ResizeObserver((entries) => {
-                const cBS = entries[0].contentBoxSize;
-                if (cBS) {
-                  const width = cBS[0].inlineSize;
-                  if (width) {
-                    $container.css({
-                      minWidth: (width) ? container.$dropdown.outerWidth(false) + 'px' : ''
-                    });
-                  }
-                }
-              })
-              .observe(this.$results[0]);
-            }
+            observeWidth(this.$results[0], width => {
+              $container.css({
+                minWidth: (width) ? container.$dropdown.outerWidth(false) + 'px' : ''
+              });
+            });
           }
         }],
         selectableOptgroup: true,
@@ -594,14 +666,14 @@
         multiple: true,
         theme: 'bootstrap-5'
       })
-      .on('select2:select select2:unselect', function (e) {
-        var data = e.params.data;
-        Filter.species(data.id, data.selected);
+      .on('select2:select select2:unselect', e => {
+        const {id, selected} = e.params.data;
+        Filter.species(id, selected);
       });
     })(speciesData);
 
     class clusterOffsets {
-      static staticConstructor = (function() {
+      static staticConstructor = (() => {
         clusterOffsets.scales = [];
         clusterOffsets.offsets = [];
         clusterOffsets.centers = [];
@@ -652,19 +724,108 @@
       const newMarkers = {};
       const features = map.querySourceFeatures(sourceId);
 
-      function createPopup(props) {
-        // mapbox only stringifies properties arrays when they are populated
-        const links = (typeof props.links === 'string') ? JSON.parse(props.links) : [];
-        return `
-          <div>
-          <strong>${escapeHTML(props.title)}</strong>
-          <p>${escapeHTML(props.description??'')}</p>
-          ${links.map(url => `
-            <a href="${escapeHTML(url[1])}">
-              <em>${escapeHTML(url[0])}</em>
-            </a>`).join(', ')}
-          </div>
-          `;
+      function createPopup(props, img) {
+        // querySourceFeatures stringifies objects/arrays, but getClusterLeaves doesn't
+        const parsePropertyObject = obj => (typeof obj === 'string') ? JSON.parse(obj) : obj;
+        const links = parsePropertyObject(props.links);
+
+        const $template = $('<div>', {style: `width: ${options.popup.chart.options.width}px;`})
+          .append(options.popup.template(links, props));
+
+        const drawSeasonalSpecies = {
+          id: 'drawSeasonalSpecies',
+          beforeDatasetsDraw: (chart, _, opts) => {
+            const {
+              ctx,
+              chartArea: {
+                top,
+                bottom,
+                left,
+                right
+              },
+              scales: {
+                x,
+                celsius: y
+              }
+            } = chart;
+
+            const gridBox = {
+              top: y.getPixelForTick(1),
+              bottom: y.getPixelForTick(0),
+              left: x.getPixelForTick(0),
+              right: x.getPixelForTick(1),
+            };
+
+            gridBox.width = gridBox.right - gridBox.left;
+            gridBox.height = gridBox.bottom - gridBox.top;
+            gridBox.minSide = Math.min(gridBox.width, gridBox.height);
+
+            function drawSpecies(x, y) {
+              if(img) {
+                ctx.drawImage(img, 
+                  x*gridBox.width + gridBox.left - gridBox.minSide/2, 
+                  -y*gridBox.height + gridBox.top + gridBox.height/2 - gridBox.minSide/2, 
+                  gridBox.minSide, gridBox.minSide);
+              }
+            }
+
+            for(i = 0; i<12; i++) {
+              const monthActive = opts.season>>(i<<1)&3;
+              if (monthActive&1) drawSpecies(i,0);
+              if (monthActive&2) drawSpecies(i,1);
+            }
+            const color = opts.dividerLine.color || 'black';
+            const width = opts.dividerLine.width || 1;
+
+            ctx.beginPath();
+
+            ctx.lineWidth = width;
+            ctx.strokeStyle = color;
+
+            ctx.moveTo(left, y.getPixelForValue(0));
+            ctx.lineTo(right, y.getPixelForValue(0));
+
+            ctx.stroke();
+          }
+        }
+
+        const $canvas = $template.find('canvas');
+        const chartOptions = {
+          plugins: [drawSeasonalSpecies],
+          type: 'bar', // 1 gridbox for each month
+          options: {
+            plugins: {
+              drawSeasonalSpecies: {
+                season: props.season,
+              }
+            },
+            scales: {
+              x: {
+                grid: {
+                  offset: true, // offset grid to have the months centered to each gridbox
+                },
+              },
+              fahrenheit: {
+                display: false,
+                afterDataLimits: axis => {
+                  const y = axis.chart.scales.celsius;
+                  y.determineDataLimits(); // update y.min/max
+                  axis.min = y.min;
+                  axis.max = y.max;
+                  axis.options.ticks.stepSize = y.options.ticks.stepSize;
+                },
+              }
+            }
+          }
+        }
+        $.extend(true, chartOptions, options.popup.chart);
+        // $.extend puts fahrenheit as first (and default) scale for datasets, so we have to force yAxisID = 'celsius'
+        chartOptions.data.datasets[0].yAxisID = chartOptions.data.datasets[1].yAxisID = 'celsius';
+        const {water, ambient} = parsePropertyObject(props.temps);
+        chartOptions.data.datasets[0].data = water;
+        chartOptions.data.datasets[1].data = ambient;
+        new Chart($canvas[0], chartOptions);
+        return new mapboxgl.Popup({maxWidth: 'none'}).setDOMContent($template[0]);
       }
 
       function getClusterLeaves(cluster_id, limit, offset) {
@@ -684,23 +845,29 @@
           const el = new Image();
           el.dataset.season = props.season; // you can use custom data if you have assigned it in the GeoJSON data
           el.dataset.species = id;
-          applySeasonStyle(el, props.speciesId, props.season);
+          applySeasonStyle(el, props.season);
+          const imgPromise = new Promise(resolve => {
+            el.onload = el.onerror = resolve;
+            el.src = `./assets/${props.speciesId}.${options.icons.extension}`;
+          });
+
           // mapbox keeps overriding opacity, so we have to put the img in a div to modify opacity
           const div = document.createElement('div');
           div.appendChild(el);
 
           marker = markers[id] = new mapboxgl.Marker({
             element: div
-          })
-          .setPopup(new mapboxgl.Popup().setHTML(createPopup(props))) // add popup
+          });
+          imgPromise.then(e => marker.setPopup(createPopup(props, (e.type == 'error') ? null : e.target)));
+           // add popup
         }
 
         const el = marker
           .setLngLat(coords)
           .setOffset(offset)
           .getElement().firstChild;
-        el.style.width = el.style.height = `${scale * options.icons.size}px`;
-        applySeasonStyle(el, props.speciesId, props.season);
+        el.style.width = el.style.height = `${scale * options.icons.map.size}px`;
+        applySeasonStyle(el, props.season);
 
         if (!markersOnScreen[props.id]) {
           marker.addTo(map);
@@ -730,7 +897,7 @@
         // only query max 7 features
         const clusterFeatures = await getClusterLeaves(props.cluster_id, 7, 0);
         if(!clusterFeatures) continue;
-        const offsets = new clusterOffsets(options.icons.size + options.icons.padding, clusterFeatures.length, mapScale, shrinkFactor);
+        const offsets = new clusterOffsets(options.icons.map.size + options.icons.map.padding, clusterFeatures.length, mapScale, shrinkFactor);
         for(const [i, {properties}] of clusterFeatures.entries()) {
           const off = offsets.get(i);
           addMarker(properties, coords, offsets.scale(), offsets.get(i));
@@ -745,24 +912,21 @@
       markersOnScreen = newMarkers;
     }
 
-    // after the GeoJSON data is loaded, update markers on the screen on every frame
     map.on('render', () => {
-        //if (!map.isSourceLoaded(sourceId)) return;
-        updateMarkers();
+      updateMarkers();
     });
 
     const layerId = 'symbols';
     map.addLayer({
-        'id': layerId,
-        'type': 'symbol',
-        'source': sourceId,
-        'layout': {
-          'icon-allow-overlap': true,
-          // icon-size affects offset scaling aswell
-        },
-      });
+      'id': layerId,
+      'type': 'symbol',
+      'source': sourceId,
+      'layout': {
+        'icon-allow-overlap': true,
+      },
+    });
 
-    // Change the cursor to a pointer when the mouse is over the places layer.
+    // Change the cursor to a pointer when the mouse is over the markers.
     map.on('mouseenter', layerId, () => {
       map.getCanvas().style.cursor = 'pointer';
     });

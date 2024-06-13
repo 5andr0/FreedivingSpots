@@ -4,13 +4,16 @@
     {
       "type": "Feature",
       "properties": {
-        "country": "New Zealand",
-        "category": "Unique Wildlife",
         "species": "Manatee",
         "title": "Swimming with Humpback Whales in Niue",
+        "description": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet",
         "skill": 0,
         "location-type": 3,
         "season": 512000,
+        "temps": {
+          "water": [18,18,18,19,22,26,29,30,30,27,24,21],
+          "ambient": [12,12,14,18,21,25,27,27,25,22,17,14]
+        },
         "links": [
           [
             "Test",
@@ -33,13 +36,15 @@
     {
       "type": "Feature",
       "properties": {
-        "country": "Dominica",
-        "category": "Whales",
         "species": "Spermwhale",
         "title": "Freediving with the Sperm Whales of Dominica",
         "skill": 0,
         "location-type": 3,
-        "season": 66409852,
+        "season": 16078207,
+        "temps": {
+          "water": [18,18,18,19,22,26,29,30,30,27,24,21],
+          "ambient": [12,12,14,18,21,25,27,27,25,22,17,14]
+        },
         "links": []
       },
       "geometry": {
@@ -53,13 +58,15 @@
     {
       "type": "Feature",
       "properties": {
-        "country": "Portugal",
-        "category": "Sharks",
         "species": "Blue Shark",
         "title": "Swim with Blue Sharks in Faial",
         "skill": 1,
         "location-type": 3,
         "season": 1963348,
+        "temps": {
+          "water": [18,18,18,19,22,26,29,30,30,27,24,21],
+          "ambient": [12,12,14,18,21,25,27,27,25,22,17,14]
+        },
         "links": []
       },
       "geometry": {
@@ -73,13 +80,15 @@
     {
       "type": "Feature",
       "properties": {
-        "country": "Portugal",
-        "category": "Rays",
         "species": "Mobula Ray",
         "title": "See the legendary Mobula Rays of Princess Alice Banks",
         "skill": 1,
         "location-type": 7,
         "season": 520192,
+        "temps": {
+          "water": [18,18,18,19,22,26,29,30,30,27,24,21],
+          "ambient": [12,12,14,18,21,25,27,27,25,22,17,14]
+        },
         "links": []
       },
       "geometry": {
@@ -93,13 +102,15 @@
     {
       "type": "Feature",
       "properties": {
-        "country": "Portugal",
-        "category": "Dolphins",
-        "species": "Dolphins",
+        "species": "Dolphin",
         "title": "Jump in the Water with Diverse Species of Dolphins",
         "skill": 0,
         "location-type": 3,
-        "season": 67108860,
+        "season": 16777215,
+        "temps": {
+          "water": [18,18,18,19,22,26,29,30,30,27,24,21],
+          "ambient": [12,12,14,18,21,25,27,27,25,22,17,14]
+        },
         "links": []
       },
       "geometry": {
@@ -113,13 +124,15 @@
     {
       "type": "Feature",
       "properties": {
-        "country": "Colombia",
-        "category": "Sharks",
         "species": "Whaleshark",
         "title": "Dive with Giant Whalesharks in Mapelo",
         "skill": 1,
-        "location-type": 4,
+        "location-type": 6,
         "season": 258048,
+        "temps": {
+          "water": [18,18,18,19,22,26,29,30,30,27,24,21],
+          "ambient": [12,12,14,18,21,25,27,27,25,22,17,14]
+        },
         "links": []
       },
       "geometry": {
@@ -133,13 +146,15 @@
     {
       "type": "Feature",
       "properties": {
-        "country": "Colombia",
-        "category": "Sharks",
         "species": "Hammerhead Shark",
         "title": "Dive with Schooling Hammerhead Sharks in Mapelo",
         "skill": 1,
         "location-type": 5,
-        "season": 55924732,
+        "season": 5593087,
+        "temps": {
+          "water": [18,18,18,19,22,26,29,30,30,27,24,21],
+          "ambient": [12,12,14,18,21,25,27,27,25,22,17,14]
+        },
         "links": []
       },
       "geometry": {
@@ -153,13 +168,15 @@
     {
       "type": "Feature",
       "properties": {
-        "country": "Norway",
-        "category": "Whales",
         "species": "Orca",
         "title": "Orcas and Humpbacks of Norway",
         "skill": 1,
         "location-type": 3,
-        "season": 58458112,
+        "season": 8126467,
+        "temps": {
+          "water": [18,18,18,19,22,26,29,30,30,27,24,21],
+          "ambient": [12,12,14,18,21,25,27,27,25,22,17,14]
+        },
         "links": []
       },
       "geometry": {
@@ -173,13 +190,15 @@
     {
       "type": "Feature",
       "properties": {
-        "country": "Norway",
-        "category": "Whales",
         "species": "Humpback Whale",
         "title": "Orcas and Humpbacks of Norway",
         "skill": 1,
         "location-type": 3,
-        "season": 58458112,
+        "season": 8126467,
+        "temps": {
+          "water": [18,18,18,19,22,26,29,30,30,27,24,21],
+          "ambient": [12,12,14,18,21,25,27,27,25,22,17,14]
+        },
         "links": []
       },
       "geometry": {
@@ -193,13 +212,15 @@
     {
       "type": "Feature",
       "properties": {
-        "country": "Mexico",
-        "category": "Rays",
         "species": "Manta Ray",
         "title": "Dive with Giant Oceanic Manta Rays in Socorro",
         "skill": 1,
         "location-type": 4,
-        "season": 66064380,
+        "season": 15732735,
+        "temps": {
+          "water": [18,18,18,19,22,26,29,30,30,27,24,21],
+          "ambient": [12,12,14,18,21,25,27,27,25,22,17,14]
+        },
         "links": []
       },
       "geometry": {
@@ -213,13 +234,15 @@
     {
       "type": "Feature",
       "properties": {
-        "country": "Mexico",
-        "category": "Sharks",
         "species": "Hammerhead Shark",
         "title": "Dive with Schooling Hammerhead Sharks in Socorro",
         "skill": 1,
         "location-type": 4,
         "season": 4032,
+        "temps": {
+          "water": [18,18,18,19,22,26,29,30,30,27,24,21],
+          "ambient": [12,12,14,18,21,25,27,27,25,22,17,14]
+        },
         "links": []
       },
       "geometry": {
@@ -233,13 +256,15 @@
     {
       "type": "Feature",
       "properties": {
-        "country": "Mexico",
-        "category": "Whales",
         "species": "Humpback Whale",
         "title": "Witness Humpback Whiles while Scuba Diving in Socorro",
         "skill": 1,
         "location-type": 4,
         "season": 252,
+        "temps": {
+          "water": [18,18,18,19,22,26,29,30,30,27,24,21],
+          "ambient": [12,12,14,18,21,25,27,27,25,22,17,14]
+        },
         "links": []
       },
       "geometry": {
@@ -253,13 +278,15 @@
     {
       "type": "Feature",
       "properties": {
-        "country": "Mexico",
-        "category": "Sharks",
         "species": "Whaleshark",
         "title": "Dive with Whale Sharks in Socorro",
         "skill": 1,
         "location-type": 4,
         "season": 3148800,
+        "temps": {
+          "water": [18,18,18,19,22,26,29,30,30,27,24,21],
+          "ambient": [12,12,14,18,21,25,27,27,25,22,17,14]
+        },
         "links": []
       },
       "geometry": {
@@ -273,13 +300,15 @@
     {
       "type": "Feature",
       "properties": {
-        "country": "Ecuador",
-        "category": "Sharks",
         "species": "Hammerhead Shark",
         "title": "Dive with Schooling Hammerheads in the Galapagos Islands",
         "skill": 1,
         "location-type": 4,
         "season": 0,
+        "temps": {
+          "water": [18,18,18,19,22,26,29,30,30,27,24,21],
+          "ambient": [12,12,14,18,21,25,27,27,25,22,17,14]
+        },
         "links": []
       },
       "geometry": {
@@ -293,13 +322,15 @@
     {
       "type": "Feature",
       "properties": {
-        "country": "Ecuador",
-        "category": "Sharks",
         "species": "Whaleshark",
         "title": "Dive with Giant Whalesharks in the Galapagos Islands",
         "skill": 1,
         "location-type": 4,
-        "season": 23067988,
+        "season": 6290773,
+        "temps": {
+          "water": [18,18,18,19,22,26,29,30,30,27,24,21],
+          "ambient": [12,12,14,18,21,25,27,27,25,22,17,14]
+        },
         "links": []
       },
       "geometry": {
@@ -313,13 +344,15 @@
     {
       "type": "Feature",
       "properties": {
-        "country": "Ecuador",
-        "category": "Unique Wildlife",
         "species": "Mola Mola",
         "title": "See the Sunfish Mola Mola in the Galapagos Islands ",
         "skill": 1,
         "location-type": 4,
-        "season": 23067988,
+        "season": 6290773,
+        "temps": {
+          "water": [18,18,18,19,22,26,29,30,30,27,24,21],
+          "ambient": [12,12,14,18,21,25,27,27,25,22,17,14]
+        },
         "links": []
       },
       "geometry": {
@@ -333,13 +366,15 @@
     {
       "type": "Feature",
       "properties": {
-        "country": "Ecuador",
-        "category": "Unique Wildlife",
         "species": "Marine Iguana",
         "title": "Experience the Only Place in the World to Dive with Marine Iguanas",
         "skill": 1,
         "location-type": 4,
-        "season": 23067988,
+        "season": 6290773,
+        "temps": {
+          "water": [18,18,18,19,22,26,29,30,30,27,24,21],
+          "ambient": [12,12,14,18,21,25,27,27,25,22,17,14]
+        },
         "links": []
       },
       "geometry": {
@@ -353,13 +388,15 @@
     {
       "type": "Feature",
       "properties": {
-        "country": "Bahamas",
-        "category": "Sharks",
         "species": "Tiger Shark",
         "title": "Watch Tiger Sharks Feeding at Tiger Beach",
         "skill": 1,
         "location-type": 6,
-        "season": 66934100,
+        "season": 16602455,
+        "temps": {
+          "water": [18,18,18,19,22,26,29,30,30,27,24,21],
+          "ambient": [12,12,14,18,21,25,27,27,25,22,17,14]
+        },
         "links": []
       },
       "geometry": {
@@ -373,13 +410,15 @@
     {
       "type": "Feature",
       "properties": {
-        "country": "Bahamas",
-        "category": "Sharks",
         "species": "Hammerhead Shark",
         "title": "Dive with Great Hammerhead Sharks in The Bahamas",
         "skill": 0,
         "location-type": 6,
-        "season": 54526044,
+        "season": 4194399,
+        "temps": {
+          "water": [18,18,18,19,22,26,29,30,30,27,24,21],
+          "ambient": [12,12,14,18,21,25,27,27,25,22,17,14]
+        },
         "links": []
       },
       "geometry": {
@@ -393,13 +432,15 @@
     {
       "type": "Feature",
       "properties": {
-        "country": "Argentina",
-        "category": "Whales",
         "species": "Southern Right Whale",
         "title": "Swim with Southern Right Whales in Argentina",
         "skill": 1,
         "location-type": 3,
         "season": 261120,
+        "temps": {
+          "water": [18,18,18,19,22,26,29,30,30,27,24,21],
+          "ambient": [12,12,14,18,21,25,27,27,25,22,17,14]
+        },
         "links": []
       },
       "geometry": {
@@ -420,11 +461,7 @@
         "Minke Whale",
         "Grey Whale",
         "Spermwhale",
-        "Orca",
-        "Pilotwhale"
-      ],
-      "Dolphins": [
-        "Dolphins"
+        "Orca"
       ],
       "Sharks": [
         "Whaleshark",
@@ -444,6 +481,7 @@
         "Sting Ray"
       ],
       "Unique Wildlife": [
+        "Dolphin",
         "Dugong",
         "Manatee",
         "Sealion",

@@ -141,12 +141,13 @@ $.fn.select2.amd.require(['select2/defaults', "select2/utils", 'optgroup/data', 
 	function (Defaults, Utils, data, results, selection) {
 		let __super__apply = Defaults.apply.bind(Defaults);
 		const adapterFields = Object.entries(__super__apply({})).reduce((pV,[k,v]) => {
-				if (v.name === 'DecoratedClass' || v.__super__) {
-					pV.push(k);
-				}
-				return pV;
-			}, 
-			[]);
+			//if (v.name === 'DecoratedClass' || v.__super__) { // doesn't work in minified version
+			if(v.prototype && v.prototype.bind) {
+				pV.push(k);
+			}
+			return pV;
+		}, 
+		[]);
 
 		Defaults.apply = function(options) {
 			const opt = __super__apply(options);
