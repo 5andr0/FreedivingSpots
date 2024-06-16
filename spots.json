@@ -36,7 +36,7 @@
     {
       "type": "Feature",
       "properties": {
-        "species": "Spermwhale",
+        "species": "Sperm Whale",
         "title": "Freediving with the Sperm Whales of Dominica",
         "skill": 0,
         "location-type": 3,
@@ -460,25 +460,25 @@
         "Southern Right Whale",
         "Minke Whale",
         "Grey Whale",
-        "Spermwhale",
+        "Sperm Whale",
         "Orca"
       ],
       "Sharks": [
-        "Whaleshark",
+        "Whale Shark",
         "Tiger Shark",
         "Bull Shark",
         "Hammerhead Shark",
         "Great White Shark",
         "Blue Shark",
-        "Nurse Shark",
-        "Reef Shark",
         "Basking Shark",
-        "Salmon Shark"
+        "Salmon Shark",
+        "Thresher Shark",
+        "Oceanic Whitetip Shark"
       ],
       "Rays": [
         "Manta Ray",
         "Mobula Ray",
-        "Sting Ray"
+        "Stingray"
       ],
       "Unique Wildlife": [
         "Dolphin",
@@ -489,7 +489,7 @@
         "Marlin",
         "Marine Iguana",
         "Crocodile",
-        "Pigs",
+        "Swimming Pig",
         "Jellyfish",
         "Leopard Seal"
       ]

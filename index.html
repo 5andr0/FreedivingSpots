@@ -219,6 +219,7 @@
           height: '1.5rem',
           width: '3rem', // fixed width to keep results indentation
           padding: '0.5rem',
+          showCategoryIcon: false,
         },
         extension: "svg",
         opacityInterpolateFunction: // https://easings.net/
@@ -629,19 +630,21 @@
 
             return $rendered;
           }}],
-        templateResult: (result, $container) => $('<div>')
-          .append(
-            $('<img>', {
-              src: `assets/${result.id}.${options.icons.extension}`
-            })
-            .css({
-              height: options.icons.result.height,
-              width: options.icons.result.width,
-              marginRight: options.icons.result.padding
-            })
-            .addClass('select2-results__image')
-          )
-          .append($('<span>').text(result.text))
+        templateResult: (result, $container) => (!options.icons.result.showCategoryIcon && result.children)
+          ? $('<span>').text(result.text).css('margin-left', options.icons.result.padding)
+          : $('<div>')
+            .append(
+              $('<img>', {
+                src: `assets/${result.id}.${options.icons.extension}`
+              })
+              .css({
+                height: options.icons.result.height,
+                width: options.icons.result.width,
+                marginRight: options.icons.result.padding
+              })
+              .addClass('select2-results__image')
+            )
+            .append($('<span>').text(result.text))
         ,
         resultsAdapterDecorators: [class {
           showLoading() {}
